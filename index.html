@@ -7,15 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        body { font-family: 'Inter', sans-serif !important; }
         .bg-krem { background-color: #FDFBF7; }
-        .text-dark { color: #2D3748; }
         [x-cloak] { display: none !important; }
         
         #invoice-wrapper {
             background: #E5E7EB;
             padding: 20px;
-            border-radius: 12px;
             height: 90vh; 
             overflow-y: auto; 
             display: flex;
@@ -33,56 +33,49 @@
             overflow: hidden;
             position: relative;
         }
-
-        #invoice-wrapper::-webkit-scrollbar { width: 6px; }
-        #invoice-wrapper::-webkit-scrollbar-thumb {
-            background-color: #CBD5E0;
-            border-radius: 10px;
-        }
     </style>
 </head>
-<body class="bg-krem text-dark font-sans" x-data="invoiceApp()" x-init="init()">
+<body class="bg-krem text-dark" x-data="invoiceApp()" x-init="init()">
 
 <div class="max-w-[1400px] mx-auto p-4 md:p-8">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <div class="lg:col-span-5 bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 h-fit">
-            <h2 class="text-2xl font-black mb-8 uppercase tracking-tighter italic">VIVA <span class="text-orange-400">INVOICE</span></h2>
+            <h2 class="text-2xl font-black mb-8 uppercase italic tracking-tighter">VIVA <span class="text-orange-400">INVOICE</span></h2>
             
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">PIC Pengirim</label>
-                    <input type="text" x-model="form.pic" class="w-full border-b-2 py-2 outline-none focus:border-slate-800 transition-all">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase">PIC Pengirim</label>
+                    <input type="text" x-model="form.pic" class="w-full border-b-2 py-2 outline-none focus:border-slate-800 transition-all font-bold text-sm">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Inv Number</label>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase">Inv Number</label>
                     <input type="text" x-model="form.invNumber" readonly class="w-full bg-gray-50 py-2 px-2 text-sm rounded mt-1 font-mono">
                 </div>
             </div>
-
+<div class="mb-6">
+    <label class="block text-[10px] font-bold text-gray-400 uppercase">Tanggal Invoice</label>
+    <input type="date" x-model="form.date" class="w-full border-b-2 py-2 outline-none focus:border-slate-800 transition-all font-bold text-sm bg-transparent">
+</div>
             <div class="mb-6">
-                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer</label>
-                <input type="text" x-model="form.customer" class="w-full border-b-2 py-2 outline-none focus:border-slate-800 transition-all" placeholder="Nama Klien">
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Customer / Client</label>
+                <input placeholder="Ketikkan disini" type="text" x-model="form.customer" class="w-full border-b-2 py-2 outline-none focus:border-slate-800 transition-all font-bold text-sm" autofocus>
             </div>
 
             <div class="mb-8">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-sm uppercase tracking-widest text-slate-400">Item List</h3>
+                    <h3 class="font-bold text-sm text-slate-400 uppercase tracking-widest">Item List</h3>
                     <button @click="addItem()" class="bg-slate-800 text-white text-[10px] px-4 py-1.5 rounded-full uppercase font-black hover:bg-black transition">+ Item</button>
                 </div>
                 <div class="space-y-4">
                     <template x-for="(item, index) in form.items" :key="index">
                         <div class="p-4 bg-gray-50 rounded-xl relative group border border-gray-100">
-                            <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Nama Barang/Jasa</label>
-                            <input type="text" x-model="item.name" class="w-full bg-transparent font-bold mb-3 outline-none border-b border-gray-200 text-sm">
-                            
+                            <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Nama Barang / Deskripsi Jasa</label>
+                            <input type="text" x-model="item.name" class="w-full bg-transparent font-bold mb-3 outline-none border-b border-gray-200 text-sm" placeholder="Ketikkan disini">
                             <div class="grid grid-cols-3 gap-3">
-                                <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Qty</label>
-                                <input type="number" x-model="item.qty" class="w-full border rounded p-2 text-xs outline-none bg-white"></div>
-                                <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Satuan</label>
-                                <input type="text" x-model="item.unit" class="w-full border rounded p-2 text-xs outline-none text-center bg-white"></div>
-                                <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Harga</label>
-                                <input type="text" :value="formatRibuan(item.price)" @input="item.price = $event.target.value.replace(/\./g, '')" class="w-full border rounded p-2 text-xs outline-none text-right bg-white"></div>
+                                <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Qty</label><input type="number" x-model="item.qty" class="w-full border rounded p-2 text-xs outline-none bg-white font-bold"></div>
+                                <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Satuan</label><input type="text" x-model="item.unit" class="w-full border rounded p-2 text-xs outline-none text-center bg-white font-bold"></div>
+                                <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Harga</label><input type="text" :value="formatRibuan(item.price)" @input="item.price = $event.target.value.replace(/\./g, '')" class="w-full border rounded p-2 text-xs outline-none text-right bg-white font-bold"></div>
                             </div>
                             <button @click="removeItem(index)" class="absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-[10px]">✕</button>
                         </div>
@@ -93,27 +86,47 @@
             <div class="mb-6 p-5 bg-orange-50 rounded-2xl border border-orange-100">
                 <p class="text-[10px] font-black text-orange-400 uppercase mb-3">Informasi Bank</p>
                 <div class="grid grid-cols-3 gap-2">
-                    <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Bank</label>
-                    <input type="text" x-model="form.bank_nama" class="w-full border rounded p-2 text-xs outline-none bg-white"></div>
-                    <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Nama</label>
-                    <input type="text" x-model="form.bank_pemilik" class="w-full border rounded p-2 text-xs outline-none bg-white"></div>
-                    <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Rekening</label>
-                    <input type="text" x-model="form.bank_rekening" class="w-full border rounded p-2 text-xs outline-none bg-white"></div>
+                    <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Bank</label><input type="text" x-model="form.bank_nama" class="w-full border rounded p-2 text-xs outline-none bg-white font-bold"></div>
+                    <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">A/N</label><input type="text" x-model="form.bank_pemilik" class="w-full border rounded p-2 text-xs outline-none bg-white font-bold text-[10px]"></div>
+                    <div><label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">No Rek</label><input type="text" x-model="form.bank_rekening" class="w-full border rounded p-2 text-xs outline-none bg-white font-bold"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
+                    <label class="block text-[10px] font-black text-blue-500 uppercase mb-2">Opsi Pembayaran</label>
+                    <div class="flex flex-col gap-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="payStatus" :checked="!form.isDP" @change="form.isDP = false; form.top = 'Full Payment Upfront / Lunas'">
+                            <span class="text-xs font-bold text-slate-700">Lunas (Full)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="payStatus" :checked="form.isDP" @change="form.isDP = true; form.top = 'DP ' + form.dpVal + '%, Pelunasan sebelum kirim'">
+                            <span class="text-xs font-bold text-slate-700">DP (%)</span>
+                        </label>
+                    </div>
+                </div>
+                <div x-show="form.isDP" x-transition class="p-3 bg-orange-50 rounded-xl border border-orange-200">
+                    <label class="block text-[10px] font-black text-orange-500 uppercase mb-1">Set DP %</label>
+                    <div class="flex items-center gap-2">
+                        <input type="number" x-model="form.dpVal" @input="form.top = 'DP ' + form.dpVal + '%, Pelunasan sebelum kirim'" class="w-full border rounded p-2 text-sm font-bold outline-none">
+                        <span class="text-sm font-bold text-orange-400">%</span>
+                    </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4 mb-8">
-                <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Diskon</label>
-                <div class="flex border rounded overflow-hidden">
-                    <select x-model="form.discType" class="bg-gray-100 px-2 text-xs outline-none"><option value="p">%</option><option value="n">Rp</option></select>
-                    <input type="number" x-model="form.discVal" class="w-full p-2 text-xs outline-none">
-                </div></div>
-                <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Term</label>
-                <select x-model="form.top" class="w-full border rounded p-2 text-xs outline-none h-[38px]">
-                    <option>DP 50%</option>
-                    <option>Full Payment</option>
-                    <option>Net 14 Days</option>
-                </select></div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Keterangan Term</label>
+                    <input type="text" x-model="form.top" class="w-full border rounded p-2 text-xs outline-none bg-gray-50 italic">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Diskon</label>
+                    <div class="flex border rounded overflow-hidden">
+                        <select x-model="form.discType" class="bg-gray-100 px-1 text-xs outline-none"><option value="p">%</option><option value="n">Rp</option></select>
+                        <input type="number" x-model="form.discVal" class="w-full p-2 text-xs outline-none font-bold">
+                    </div>
+                </div>
             </div>
 
             <button @click="processInvoice()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-black text-lg hover:bg-black transition-all uppercase tracking-widest">Download & Simpan</button>
@@ -124,11 +137,10 @@
                 <div id="invoice-canvas">
                     <div class="flex justify-between items-start border-b-4 border-slate-800 pb-6 mb-8">
                         <div class="flex-1">
-                            <h1 class="text-2xl font-black uppercase text-slate-800 leading-tight" x-text="kop.nama"></h1>
+                            <h1 class="text-2xl font-black uppercase text-slate-800" x-text="kop.nama"></h1>
                             <p class="text-[10px] text-gray-500 mt-2 leading-relaxed" x-text="kop.alamat"></p>
                             <div class="mt-3 text-[9px] font-bold text-slate-400 space-y-0.5">
-                                <p x-text="'Email: ' + kop.email"></p>
-                                <p x-text="'Telp: ' + kop.telp"></p>
+                                <p x-text="'Email: ' + kop.email"></p><p x-text="'Telp: ' + kop.telp"></p>
                             </div>
                         </div>
                         <div class="text-right ml-4">
@@ -144,23 +156,20 @@
                         </div>
                         <div class="text-right">
                             <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-1">Date:</p>
-                            <p class="font-bold text-xs text-slate-800" x-text="form.date"></p>
+                            <p class="font-bold text-xs text-slate-800" x-text="formatTanggalIndo(form.date)"></p>
                         </div>
                     </div>
 
                     <table class="w-full mb-10">
                         <thead>
-                            <tr class="bg-slate-800 text-white text-[9px] uppercase tracking-widest">
-                                <th class="py-3 px-4 text-left">Item</th>
-                                <th class="py-3 px-4 text-center w-20">Qty</th>
-                                <th class="py-3 px-4 text-right w-32">Price</th>
-                                <th class="py-3 px-4 text-right w-32">Total</th>
+                            <tr class="bg-slate-800 text-white text-[9px] uppercase tracking-widest text-left">
+                                <th class="py-3 px-4">Item</th><th class="py-3 px-4 text-center">Qty</th><th class="py-3 px-4 text-right">Price</th><th class="py-3 px-4 text-right">Total</th>
                             </tr>
                         </thead>
                         <tbody class="text-[10px]">
                             <template x-for="item in form.items">
                                 <tr class="border-b border-gray-100">
-                                    <td class="py-4 px-4 font-bold text-slate-700 break-words" x-text="item.name || '-'"></td>
+                                    <td class="py-4 px-4 font-bold text-slate-700" x-text="item.name || '-'"></td>
                                     <td class="py-4 px-4 text-center text-gray-500" x-text="item.qty + ' ' + item.unit"></td>
                                     <td class="py-4 px-4 text-right text-gray-500" x-text="formatRibuan(item.price)"></td>
                                     <td class="py-4 px-4 text-right font-black text-slate-800" x-text="formatRibuan(item.qty * item.price)"></td>
@@ -173,21 +182,25 @@
                         <div class="flex-1">
                             <p class="text-[9px] text-gray-400 font-bold uppercase mb-2">Payment Info:</p>
                             <p class="text-[10px] mb-4 font-medium text-slate-700" x-text="form.top"></p>
-                            
                             <div class="space-y-0.5">
-				<p class="text-[9px] text-gray-400 font-bold uppercase mb-2">Bank Info:</p>
+                            <p class="text-[9px] text-gray-400 font-bold uppercase mb-2">Bank Info:</p>
                                 <p class="text-[9px] font-black text-slate-800 uppercase tracking-widest" x-text="form.bank_nama || 'BANK NAME'"></p>
                                 <p class="text-xl font-black text-orange-400 tracking-tighter" x-text="form.bank_rekening || '000000000'"></p>
                                 <p class="text-[10px] text-slate-800 font-bold italic" x-text="'a/n ' + (form.bank_pemilik || 'OWNER NAME')"></p>
                             </div>
                         </div>
-                        <div class="w-48 space-y-2">
-                            <div class="flex justify-between text-[10px] text-gray-400 font-bold"><span>SUBTOTAL</span><span x-text="formatRibuan(calculateSubtotal())"></span></div>
-                            <div class="flex justify-between text-[10px] text-red-400 font-bold"><span>DISCOUNT</span><span x-text="'-' + formatRibuan(calculateDisc())"></span></div>
-                            <div class="flex justify-between font-black text-2xl border-t-4 border-slate-800 pt-3 mt-3 text-slate-800">
-                                <span class="text-xs self-center">TOTAL</span>
-                                <span x-text="'Rp' + formatRibuan(calculateGrand())"></span>
+                        <div class="w-52 space-y-2 text-[10px] font-bold">
+                            <div class="flex justify-between text-gray-400"><span>SUBTOTAL</span><span x-text="formatRibuan(calculateSubtotal())"></span></div>
+                            <div class="flex justify-between text-red-400"><span>DISCOUNT</span><span x-text="'-' + formatRibuan(calculateDisc())"></span></div>
+                            <div class="flex justify-between font-black text-xl border-t-2 border-slate-800 pt-2 text-slate-800">
+                                <span class="text-[8px] self-center">GRAND TOTAL</span><span x-text="'Rp' + formatRibuan(calculateGrand())"></span>
                             </div>
+                            <template x-if="form.isDP">
+                                <div class="mt-2 pt-2 border-t border-dashed border-gray-300 space-y-1">
+                                    <div class="flex justify-between text-blue-600"><span x-text="'DP ' + form.dpVal + '%'"></span><span x-text="'Rp' + formatRibuan(calculateDP())"></span></div>
+                                    <div class="flex justify-between text-slate-900 bg-yellow-50 p-1 rounded"><span>SISA TAGIHAN</span><span x-text="'Rp' + formatRibuan(calculateSisa())"></span></div>
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -204,62 +217,54 @@
             kop: { nama: 'LOADING...', alamat: '', email: '', telp: '' },
             form: {
                 pic: 'Yuswadi Hermawan', customer: '', date: new Date().toISOString().split('T')[0], invNumber: '...',
-                items: [{ name: '', qty: '', unit: 'Pcs', price: '' }],
+                items: [{ name: '', qty: '', unit: 'Pcs', price: 0 }],
                 bank_nama: 'BRI', bank_pemilik: 'YUSWADI HERMAWAN', bank_rekening: '784801008883536',
-                discType: 'p', discVal: 0, top: 'DP 50%'
+                discType: 'p', discVal: 0, isDP: false, dpVal: 50, top: 'Full Payment Upfront / Lunas'
             },
             async init() {
                 try {
                     const response = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getInitialData' }) });
                     const res = await response.json();
                     this.kop = res.kop; this.form.invNumber = res.nextInv;
-                } catch (e) { console.error("Koneksi gagal!"); }
+                } catch (e) { console.error("Gagal load data awal!"); }
             },
-            addItem() { this.form.items.push({ name: '', qty: '', unit: 'Pcs', price: '' }); },
+            addItem() { this.form.items.push({ name: '', qty: 1, unit: 'Pcs', price: 0 }); },
             removeItem(i) { if(this.form.items.length > 1) this.form.items.splice(i, 1); },
             formatRibuan(v) { return v ? v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'; },
+	formatTanggalIndo(dateStr) {
+	    if (!dateStr) return '';
+	    const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+	    const d = new Date(dateStr);
+	    return `${d.getDate()} ${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
+	},
             calculateSubtotal() { return this.form.items.reduce((a, b) => a + (b.qty * b.price), 0); },
             calculateDisc() {
                 let sub = this.calculateSubtotal();
                 return this.form.discType === 'p' ? sub * (this.form.discVal / 100) : (parseFloat(this.form.discVal) || 0);
             },
             calculateGrand() { return this.calculateSubtotal() - this.calculateDisc(); },
-
+            calculateDP() { return this.form.isDP ? (this.calculateGrand() * (this.form.dpVal / 100)) : 0; },
+            calculateSisa() { return this.calculateGrand() - this.calculateDP(); },
             async processInvoice() {
-            	if (!this.form.pic.trim()) return alert("⚠️ Nama PIC Pengirim wajib diisi!");
-                if (!this.form.customer.trim()) return alert("⚠️ Nama Customer wajib diisi!");
-                if (!this.form.bank_nama.trim() || !this.form.bank_rekening.trim()) {
-                    return alert("⚠️ Informasi Bank (Nama & Rekening) wajib diisi!");
-                }
+                if (!this.form.pic.trim() || !this.form.customer.trim() || !this.form.bank_rekening.trim()) return alert("⚠️ Lengkapi PIC, Customer, dan No Rekening!");
+                if (this.form.items.some(i => !i.name.trim() || i.price <= 0)) return alert("⚠️ Cek Nama Barang & Harga!");
 
-                // Cek apakah item list kosong atau ada item yang belum diisi namanya/harganya
-                if (this.form.items.length === 0) return alert("⚠️ Minimal harus ada 1 item!");
-                
-                const itemInvalid = this.form.items.some(item => !item.name.trim() || item.price <= 0);
-                if (itemInvalid) {
-                    return alert("⚠️ Semua Nama Barang harus diisi dan Harga harus lebih dari 0!");
-                }
                 const element = document.getElementById('invoice-canvas');
                 const wrapper = document.getElementById('invoice-wrapper');
                 wrapper.scrollTop = 0;
-
                 const opt = { 
-                    margin: 0, filename: `INV-${this.form.invNumber}.pdf`, 
-                    image: { type: 'jpeg', quality: 1 },
+                    margin: 0, filename: `INV-${this.form.invNumber}.pdf`, image: { type: 'jpeg', quality: 1 },
                     html2canvas: { scale: 2, useCORS: true, scrollY: 0, windowHeight: element.scrollHeight }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
                 };
-
                 try {
-                    await new Promise(resolve => setTimeout(resolve, 500));
+                    await new Promise(r => setTimeout(r, 500));
                     await html2pdf().set(opt).from(element).save();
                     const payload = {
                         action: 'saveInvoice',
                         data: {
-                            invNumber: this.form.invNumber, date: this.form.date, pic: this.form.pic,
-                            customer: this.form.customer, subtotal: this.calculateSubtotal(),
-                            discountTotal: this.calculateDisc(), grandTotal: this.calculateGrand(),
-                            items: this.form.items
+                            invNumber: this.form.invNumber, pic: this.form.pic, customer: this.form.customer,
+                            grandTotal: this.calculateGrand(), dpNominal: this.calculateDP(), items: this.form.items
                         }
                     };
                     await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
